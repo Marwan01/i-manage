@@ -24,14 +24,14 @@ export const VolunteerListToolbar = (props) => (
       }}
     >
       <Typography sx={{ m: 1 }} variant="h4">
-        Customers
+        Volunteer
       </Typography>
       <Box sx={{ m: 1 }}>
         <Button startIcon={<DownloadIcon fontSize="small" />} sx={{ mr: 1 }}>
           Export
         </Button>
         <Button color="primary" variant="contained">
-          Add Customers
+          Add Volunteer
         </Button>
       </Box>
     </Box>

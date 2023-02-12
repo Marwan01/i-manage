@@ -10,7 +10,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { getFirestore, collection, doc, getDoc, setDoc } from "firebase/firestore";
+import { getFirestore, collection, doc, getDoc, setDoc, getDocs } from "firebase/firestore";
 //
 import { FIREBASE_API } from "../config";
 import Upper from "../utils/upper";
@@ -27,16 +27,18 @@ const initialState = {
   isAuthenticated: true,
   isInitialized: false,
   user: null,
+  valunteers: [],
 };
 
 const reducer = (state, action) => {
   if (action.type === "INITIALISE") {
-    const { isAuthenticated, user } = action.payload;
+    const { isAuthenticated, user, valunteers } = action.payload;
     return {
       ...state,
       isAuthenticated,
       isInitialized: true,
       user,
+      valunteers,
     };
   }
 
@@ -49,6 +51,7 @@ const AuthContext = createContext({
   login: () => Promise.resolve(),
   register: () => Promise.resolve(),
   logout: () => Promise.resolve(),
+  getVolunteer: () => Promise.resolve(),
 });
 // ----------------------------------------------------------------------
 
@@ -60,7 +63,7 @@ function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { push } = useRouter();
   const [profile, setProfile] = useState(null);
-
+  const [allVolunteer, setAllVolunteer] = useState(null);
   useEffect(
     () =>
       onAuthStateChanged(AUTH, async (user) => {
@@ -165,7 +168,20 @@ function AuthProvider({ children }) {
       });
 
   const logout = () => signOut(AUTH);
+  const getVolunteer = () => async () => {
+    onAuthStateChanged(AUTH, async (user) => {
+      if (user) {
+        const volRef = await getDocs(collection(DB, "users", user?.email, "volunteers"));
+        console.log("getPatients");
+        const volunt = volRef?.docs?.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
 
+        setAllVolunteer(volunt);
+      }
+    });
+  };
   return (
     <AuthContext.Provider
       value={{
@@ -174,20 +190,14 @@ function AuthProvider({ children }) {
         user: {
           id: state?.user?.uid,
           email: state?.user?.email,
-          photoURL: state?.user?.photoURL || profile?.photoURL,
           firstName: state?.user?.firstName || profile?.firstName,
           lastName: state?.user?.lastName || profile?.lastName,
           displayName: state?.user?.displayName || profile?.displayName,
-          nbreOfPrint: profile?.nbreOfPrint || 0,
-          phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || "",
-          country: profile?.country || "",
-
-          state: profile?.state || "",
         },
-
-        login,
+        valunteers: login,
         register,
         logout,
+        getVolunteer,
       }}
     >
       {children}
