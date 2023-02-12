@@ -5,7 +5,7 @@ import useAuth from "../hooks/useAuth";
 
 export const AccountPopover = (props) => {
   const { anchorEl, onClose, open, ...other } = props;
-  const { logout } = useAuth();
+  const { logout, user } = useAuth();
 
   const handleSignOut = async () => {
     onClose?.();
@@ -16,7 +16,7 @@ export const AccountPopover = (props) => {
       // Update Auth Context state
 
       // Redirect to loginpage
-      Router.push("/login").catch(console.error);
+      Router.push("/login");
     } catch (err) {
       console.error(err);
     }
@@ -44,7 +44,7 @@ export const AccountPopover = (props) => {
       >
         <Typography variant="overline">Account</Typography>
         <Typography color="text.secondary" variant="body2">
-          John Doe
+          {user.displayName}
         </Typography>
       </Box>
       <MenuList
