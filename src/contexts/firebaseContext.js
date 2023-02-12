@@ -27,18 +27,18 @@ const initialState = {
   isAuthenticated: true,
   isInitialized: false,
   user: null,
-  valunteers: [],
+  valunteersOpp: [],
 };
 
 const reducer = (state, action) => {
   if (action.type === "INITIALISE") {
-    const { isAuthenticated, user, valunteers } = action.payload;
+    const { isAuthenticated, user, valunteersOpp } = action.payload;
     return {
       ...state,
       isAuthenticated,
       isInitialized: true,
       user,
-      valunteers,
+      valunteersOpp,
     };
   }
 
@@ -51,7 +51,8 @@ const AuthContext = createContext({
   login: () => Promise.resolve(),
   register: () => Promise.resolve(),
   logout: () => Promise.resolve(),
-  getVolunteer: () => Promise.resolve(),
+  getVolunteerOpp: () => Promise.resolve(),
+  createVolunteerOpp: () => Promise.resolve(),
 });
 // ----------------------------------------------------------------------
 
@@ -63,7 +64,7 @@ function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { push } = useRouter();
   const [profile, setProfile] = useState(null);
-  const [allVolunteer, setAllVolunteer] = useState(null);
+  const [allVolunteerOpp, setAllVolunteerOpp] = useState(null);
   useEffect(
     () =>
       onAuthStateChanged(AUTH, async (user) => {
@@ -77,7 +78,7 @@ function AuthProvider({ children }) {
             d.displayName = `${Upper(d?.firstName)} ${Upper(d?.lastName)}`;
             setProfile(d);
           }
-
+          getVolunteerOpp();
           dispatch({
             type: "INITIALISE",
             payload: { isAuthenticated: true, user },
@@ -98,7 +99,7 @@ function AuthProvider({ children }) {
   const login = async (email, password) => {
     signInWithEmailAndPassword(AUTH, email, password)
       .then(() => {
-        push("/");
+        push("/volunteer");
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -168,18 +169,27 @@ function AuthProvider({ children }) {
       });
 
   const logout = () => signOut(AUTH);
-  const getVolunteer = () => async () => {
+  const getVolunteerOpp = () => async () => {
     onAuthStateChanged(AUTH, async (user) => {
       if (user) {
         const volRef = await getDocs(collection(DB, "users", user?.email, "volunteers"));
-        console.log("getPatients");
         const volunt = volRef?.docs?.map((doc) => ({
           ...doc.data(),
           id: doc.id,
         }));
 
-        setAllVolunteer(volunt);
+        setAllVolunteerOpp(volunt);
       }
+    });
+  };
+  const createVolunteerOpp = (newVolunteerOpp) => async () => {
+    onAuthStateChanged(AUTH, async (user) => {
+      const docRef = await addDoc(
+        collection(DB, "users", user.email, "volunteers"),
+        newVolunteerOpp
+      );
+      newPatient.id = docRef.id;
+      setAllVolunteerOpp(allVolunteerOpp.push(newVolunteerOpp));
     });
   };
   return (
@@ -194,10 +204,11 @@ function AuthProvider({ children }) {
           lastName: state?.user?.lastName || profile?.lastName,
           displayName: state?.user?.displayName || profile?.displayName,
         },
-        valunteers: login,
+        login,
         register,
         logout,
-        getVolunteer,
+        createVolunteerOpp,
+        volunteers: allVolunteerOpp,
       }}
     >
       {children}
