@@ -1,7 +1,7 @@
-import { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/router';
-import PropTypes from 'prop-types';
-import { useAuthContext } from '../contexts/auth-context';
+import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
+import PropTypes from "prop-types";
+import { useAuthContext } from "../contexts/auth-context";
 
 export const AuthGuard = (props) => {
   const { children } = props;
@@ -28,17 +28,18 @@ export const AuthGuard = (props) => {
       ignore.current = true;
 
       if (!isAuthenticated) {
-        console.log('Not authenticated, redirecting');
+        console.log("Not authenticated, redirecting");
         router
           .replace({
-            pathname: '/sign-in',
-            query: router.asPath !== '/' ? { continueUrl: router.asPath } : undefined
+            pathname: "/sign-in",
+            query: router.asPath !== "/" ? { continueUrl: router.asPath } : undefined,
           })
           .catch(console.error);
       } else {
         setChecked(true);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [router.isReady]
   );
 
@@ -53,5 +54,5 @@ export const AuthGuard = (props) => {
 };
 
 AuthGuard.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
