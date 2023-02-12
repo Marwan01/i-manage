@@ -50,7 +50,7 @@ const Register = () => {
   return (
     <>
       <Head>
-        <title>Register | Material Kit</title>
+        <title>Register | iManage</title>
       </Head>
       <Box
         component="main"

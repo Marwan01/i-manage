@@ -6,7 +6,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 const Page = () => (
   <>
     <Head>
-      <title>404 | Material Kit</title>
+      <title>Volunteering Home | iManage</title>
     </Head>
     <Box
       component="main"
@@ -26,16 +26,15 @@ const Page = () => (
           }}
         >
           <Typography align="center" color="textPrimary" variant="h1">
-            404: The page you are looking for isn’t here
+            iManage Volunteering
           </Typography>
           <Typography align="center" color="textPrimary" variant="subtitle2">
-            You either tried some shady route or you came here by mistake. Whichever it is, try
-            using the navigation
+          iManage is a free open source platform for non-profits to keep track of volunteering opportunities and manage volunteers.
           </Typography>
           <Box sx={{ textAlign: "center" }}>
             <img
               alt="Under development"
-              src="/static/images/undraw_page_not_found_su7k.svg"
+              src="/static/images/logo.png"
               style={{
                 marginTop: 50,
                 display: "inline-block",
@@ -44,14 +43,13 @@ const Page = () => (
               }}
             />
           </Box>
-          <NextLink href="/" passHref>
+          <NextLink href="/volunteer" passHref>
             <Button
               component="a"
-              startIcon={<ArrowBackIcon fontSize="small" />}
               sx={{ mt: 3 }}
               variant="contained"
             >
-              Go back to dashboard
+              Start Now!
             </Button>
           </NextLink>
         </Box>
