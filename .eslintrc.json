@@ -1,9 +1,25 @@
 {
   "extends": "next/core-web-vitals",
   "rules": {
-    "@next/next/no-img-element": "off",
     "jsx-a11y/alt-text": "off",
-    "react/display-name": "off",
+    "arrow-body-style": 1,
+    "react/prop-types": 1,
+    "react/display-name": 0,
+    "import/no-unresolved": 2,
+    "react/no-children-prop": 1,
+    "react/self-closing-comp": 2,
+    "react/react-in-jsx-scope": 0,
+    "react/jsx-key": 1,
+    "react/no-array-index-key": 0,
+    "@next/next/no-img-element": 0,
+    "react/no-unescaped-entities": 0,
+    "import/no-useless-path-segments": 1,
+    "no-unused-vars": [
+      1,
+      {
+        "ignoreRestSiblings": false
+      }
+    ],
     "react/jsx-max-props-per-line": [
       1,
       {

@@ -1,163 +1,239 @@
-import { createContext, useContext, useEffect, useReducer, useRef } from 'react';
-import PropTypes from 'prop-types';
-import { auth, ENABLE_AUTH } from '../lib/auth';
+import PropTypes from "prop-types";
+import { createContext, useEffect, useReducer, useState } from "react";
+import { initializeApp } from "firebase/app";
+import swal from "sweetalert";
+import { useRouter } from "next/router";
+import {
+  getAuth,
+  signOut,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+} from "firebase/auth";
+import { getFirestore, collection, doc, getDoc, setDoc } from "firebase/firestore";
+//
+import { FIREBASE_API } from "../config";
+import Upper from "../utils/upper";
 
-const HANDLERS = {
-  INITIALIZE: 'INITIALIZE',
-  SIGN_IN: 'SIGN_IN',
-  SIGN_OUT: 'SIGN_OUT'
-};
+// ----------------------------------------------------------------------
+
+const firebaseApp = initializeApp(FIREBASE_API);
+
+const AUTH = getAuth(firebaseApp);
+
+const DB = getFirestore(firebaseApp);
 
 const initialState = {
   isAuthenticated: false,
-  isLoading: true,
-  user: null
+  isInitialized: false,
+  user: null,
 };
 
-const handlers = {
-  [HANDLERS.INITIALIZE]: (state, action) => {
-    const user = action.payload;
-
+const reducer = (state, action) => {
+  if (action.type === "INITIALISE") {
+    const { isAuthenticated, user } = action.payload;
     return {
       ...state,
-      ...(
-        // if payload (user) is provided, then is authenticated
-        user
-          ? ({
-            isAuthenticated: true,
-            isLoading: false,
-            user
-          })
-          : ({
-            isLoading: false
-          })
-      )
-    };
-  },
-  [HANDLERS.SIGN_IN]: (state, action) => {
-    const user = action.payload;
-
-    return {
-      ...state,
-      isAuthenticated: true,
-      user
-    };
-  },
-  [HANDLERS.SIGN_OUT]: (state) => {
-    return {
-      ...state,
-      isAuthenticated: false,
-      user: null
+      isAuthenticated,
+      isInitialized: true,
+      user,
     };
   }
+
+  return state;
 };
 
-const reducer = (state, action) => (
-  handlers[action.type] ? handlers[action.type](state, action) : state
-);
+const AuthContext = createContext({
+  ...initialState,
+  method: "firebase",
+  login: () => Promise.resolve(),
+  register: () => Promise.resolve(),
+  logout: () => Promise.resolve(),
+  updateProfile: () => Promise.resolve(),
+  resetPassword: () => Promise.resolve(),
+});
+// ----------------------------------------------------------------------
 
-// The role of this context is to propagate authentication state through the App tree.
+AuthProvider.propTypes = {
+  children: PropTypes.node,
+};
 
-export const AuthContext = createContext({ undefined });
-
-export const AuthProvider = (props) => {
-  const { children } = props;
+function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const initialized = useRef(false);
+  const { push } = useRouter();
+  const [profile, setProfile] = useState(null);
 
-  const initialize = async () => {
-    // Prevent from calling twice in development mode with React.StrictMode enabled
-    if (initialized.current) {
-      return;
-    }
+  useEffect(
+    () =>
+      onAuthStateChanged(AUTH, async (user) => {
+        if (user) {
+          const userRef = doc(DB, "users", user.email);
 
-    initialized.current = true;
+          const docSnap = await getDoc(userRef);
 
-    // Check if auth has been skipped
-    // From sign-in page we may have set "skip-auth" to "true"
-    const authSkipped = globalThis.sessionStorage.getItem('skip-auth') === 'true';
+          if (docSnap.exists()) {
+            const d = docSnap.data();
+            d.displayName = `${Upper(d?.firstName)} ${Upper(d?.lastName)}`;
+            setProfile(d);
+          }
 
-    if (authSkipped) {
-      const user = {};
+          dispatch({
+            type: "INITIALISE",
+            payload: { isAuthenticated: true, user },
+          });
+        } else {
+          dispatch({
+            type: "INITIALISE",
+            payload: { isAuthenticated: false, user: null },
+          });
+        }
+      }),
 
-      dispatch({
-        type: HANDLERS.INITIALIZE,
-        payload: user
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [dispatch]
+  );
+
+  const router = useRouter();
+  const login = async (email, password) => {
+    signInWithEmailAndPassword(AUTH, email, password)
+      .then(() => {
+        push("/");
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode === "auth/wrong-password") {
+          swal("Wrong password!", "Enter the correct password.", "error", {
+            button: "ok",
+          });
+        } else if (errorCode === "auth/user-not-found") {
+          swal({
+            title: "user not found!",
+            text: "Please register first.",
+            icon: "warning",
+            buttons: true,
+          }).then((signup) => {
+            if (signup) {
+              router.push("register/");
+            }
+          });
+        } else {
+          swal(errorMessage, errorCode, "error", {
+            button: "ok",
+          });
+        }
       });
-      return;
-    }
+  };
 
-    // Check if authentication with Zalter is enabled
-    // If not, then set user as authenticated
-    if (!ENABLE_AUTH) {
-      const user = {};
+  const register = (email, password, firstName, lastName) =>
+    createUserWithEmailAndPassword(AUTH, email, password)
+      .then(async () => {
+        email = email.toLowerCase();
+        firstName = Upper(firstName);
+        lastName = Upper(lastName);
+        const userRef = doc(collection(DB, "users"), email);
 
-      dispatch({
-        type: HANDLERS.INITIALIZE,
-        payload: user
+        await setDoc(userRef, {
+          email,
+          firstName,
+          lastName,
+        });
+        push("/");
+      })
+      .catch((error) => {
+        // Handle Errors here.
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        if (errorCode === "auth/weak-password") {
+          swal("Weak password!", "please write a stronger password.", "warning", {
+            button: "ok",
+          });
+        } else if (errorCode === "auth/email-already-in-use") {
+          swal({
+            title: "Email already used!",
+            text: "You already have an account with this email. Redirect to login page.",
+            icon: "warning",
+            buttons: true,
+          }).then((signin) => {
+            if (signin) {
+              router.push("/login/");
+            }
+          });
+        } else {
+          swal(errorMessage, errorCode, "error", {
+            button: "ok",
+          });
+        }
       });
-      return;
-    }
 
-    try {
-      // Check if user is authenticated
-      const isAuthenticated = await auth.isAuthenticated();
+  const logout = () => signOut(AUTH);
 
-      if (isAuthenticated) {
-        // Get user from your database
-        const user = {};
-
-        dispatch({
-          type: HANDLERS.INITIALIZE,
-          payload: user
-        });
-      } else {
-        dispatch({
-          type: HANDLERS.INITIALIZE
-        });
+  const updateProfile = (data) => {
+    onAuthStateChanged(AUTH, async (user) => {
+      if (user) {
+        const userRef = doc(collection(DB, "users"), user.email);
+        await setDoc(userRef, data)
+          .then(() => {
+            const d = data;
+            d.firstName = Upper(d?.firstName || "");
+            d.lastName = Upper(d?.lastName || "");
+            d.displayName = `${d?.firstName} ${d?.lastName}`;
+            setProfile(d);
+            push("/");
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       }
-    } catch (err) {
-      console.error(err);
-      dispatch({
-        type: HANDLERS.INITIALIZE
+    });
+  };
+
+  const resetPassword = (email) =>
+    sendPasswordResetEmail(AUTH, email)
+      .then(() => {
+        swal("Email sent", "Please check your email and spam folder.", "success", {
+          button: "OK",
+        }).then(async () => {
+          await router.push("/login/");
+        });
+      })
+      .catch((error) => {
+        swal("user not found!", "Please write first.", "error", {
+          button: "OK",
+        });
+        console.log(error);
       });
-    }
-  };
-
-  useEffect(() => {
-    initialize().catch(console.error);
-  }, []);
-
-  const signIn = (user) => {
-    dispatch({
-      type: HANDLERS.SIGN_IN,
-      payload: user
-    });
-  };
-
-  const signOut = () => {
-    dispatch({
-      type: HANDLERS.SIGN_OUT
-    });
-  };
 
   return (
     <AuthContext.Provider
       value={{
         ...state,
-        signIn,
-        signOut
+        method: "firebase",
+        user: {
+          id: state?.user?.uid,
+          email: state?.user?.email,
+          photoURL: state?.user?.photoURL || profile?.photoURL,
+          firstName: state?.user?.firstName || profile?.firstName,
+          lastName: state?.user?.lastName || profile?.lastName,
+          displayName: state?.user?.displayName || profile?.displayName,
+          nbreOfPrint: profile?.nbreOfPrint || 0,
+          phoneNumber: state?.user?.phoneNumber || profile?.phoneNumber || "",
+          country: profile?.country || "",
+
+          state: profile?.state || "",
+        },
+
+        login,
+        register,
+        logout,
+        updateProfile,
+        resetPassword,
       }}
     >
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
-AuthProvider.propTypes = {
-  children: PropTypes.node
-};
-
-export const AuthConsumer = AuthContext.Consumer;
-
-export const useAuthContext = () => useContext(AuthContext);
+export { AuthContext, AuthProvider };

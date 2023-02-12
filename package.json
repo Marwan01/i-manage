@@ -25,6 +25,7 @@
     "@zalter/identity-js": "1.2.1",
     "chart.js": "3.9.1",
     "date-fns": "2.29.3",
+    "firebase": "^9.17.1",
     "formik": "2.2.9",
     "next": "12.3.0",
     "nprogress": "0.2.0",
@@ -33,6 +34,7 @@
     "react-chartjs-2": "4.3.1",
     "react-dom": "18.2.0",
     "react-perfect-scrollbar": "1.5.8",
+    "sweetalert": "^2.1.2",
     "uuid": "9.0.0",
     "yup": "0.32.11"
   },
