@@ -79,7 +79,7 @@ export const customers = [
       city: 'Bakerfield',
       street: '317 Angus Road'
     },
-    avatarUrl: '/static/images/avatars/avatar_1.png',
+    avatarUrl: '/static/images/logo.png',
     createdAt: 1554670800000,
     email: 'adam.denisov@devias.io',
     name: 'Adam Denisov',
