@@ -4,7 +4,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { CssBaseline } from "@mui/material";
 import { ThemeProvider } from "@mui/material/styles";
-
+import PropTypes from "prop-types";
 import { createEmotionCache } from "../utils/create-emotion-cache";
 import { registerChartJs } from "../utils/register-chart-js";
 import { theme } from "../theme";
@@ -34,6 +34,11 @@ const App = (props) => {
       </LocalizationProvider>
     </CacheProvider>
   );
+};
+App.propTypes = {
+  Component: PropTypes.func,
+  pageProps: PropTypes.object,
+  emotionCache: PropTypes.object,
 };
 
 export default App;
