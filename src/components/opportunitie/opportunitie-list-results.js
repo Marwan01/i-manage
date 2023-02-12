@@ -17,7 +17,7 @@ import {
 import createAvatar from "../../utils/createAvatar";
 import Avatar from "../Avatar";
 
-export const CustomerListResults = ({ customers, ...rest }) => {
+export const OpportunitieListResults = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -145,6 +145,6 @@ export const CustomerListResults = ({ customers, ...rest }) => {
   );
 };
 
-CustomerListResults.propTypes = {
+OpportunitieListResults.propTypes = {
   customers: PropTypes.array.isRequired,
 };
