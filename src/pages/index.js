@@ -1,7 +1,6 @@
 import Head from "next/head";
 import NextLink from "next/link";
 import { Box, Button, Container, Typography } from "@mui/material";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
 const Page = () => (
   <>
@@ -29,7 +28,8 @@ const Page = () => (
             iManage Volunteering
           </Typography>
           <Typography align="center" color="textPrimary" variant="subtitle2">
-          iManage is a free open source platform for non-profits to keep track of volunteering opportunities and manage volunteers.
+            iManage is a free open source platform for non-profits to keep track of volunteering
+            opportunities and manage volunteers.
           </Typography>
           <Box sx={{ textAlign: "center" }}>
             <img
@@ -44,11 +44,7 @@ const Page = () => (
             />
           </Box>
           <NextLink href="/volunteer" passHref>
-            <Button
-              component="a"
-              sx={{ mt: 3 }}
-              variant="contained"
-            >
+            <Button component="a" sx={{ mt: 3 }} variant="contained">
               Start Now!
             </Button>
           </NextLink>
