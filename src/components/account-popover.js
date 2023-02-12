@@ -1,11 +1,11 @@
 import Router from "next/router";
 import PropTypes from "prop-types";
 import { Box, MenuItem, MenuList, Popover, Typography } from "@mui/material";
-import useAuth from "../hooks/useAuth";
+import useFirebase from "../hooks/useFirebase";
 
 export const AccountPopover = (props) => {
   const { anchorEl, onClose, open, ...other } = props;
-  const { logout, user } = useAuth();
+  const { logout, user } = useFirebase();
 
   const handleSignOut = async () => {
     onClose?.();

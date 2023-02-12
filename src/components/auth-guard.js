@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import useAuth from "../hooks/useAuth";
+import useFirebase from "../hooks/useFirebase";
 
 export const AuthGuard = (props) => {
   const { children } = props;
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useFirebase();
   const ignore = useRef(false);
   const [checked, setChecked] = useState(false);
 

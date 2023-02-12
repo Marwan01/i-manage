@@ -9,7 +9,7 @@ import { createEmotionCache } from "../utils/create-emotion-cache";
 import { registerChartJs } from "../utils/register-chart-js";
 import { theme } from "../theme";
 
-import { AuthProvider } from "../contexts/auth-context";
+import { AuthProvider } from "../contexts/firebaseContext";
 
 registerChartJs();
 

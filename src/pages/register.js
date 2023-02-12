@@ -14,10 +14,10 @@ import {
   Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import useAuth from "../hooks/useAuth";
+import useFirebase from "../hooks/useFirebase";
 
 const Register = () => {
-  const { register } = useAuth();
+  const { register } = useFirebase();
   const formik = useFormik({
     initialValues: {
       email: "",

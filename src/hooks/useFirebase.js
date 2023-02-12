@@ -1,6 +1,6 @@
 import { useContext } from "react";
-import { AuthContext } from "../contexts/auth-context";
-const useAuth = () => {
+import { AuthContext } from "../contexts/firebaseContext";
+const useFirebase = () => {
   const context = useContext(AuthContext);
 
   if (!context) throw new Error("Auth context must be use inside AuthProvider");
@@ -8,4 +8,4 @@ const useAuth = () => {
   return context;
 };
 
-export default useAuth;
+export default useFirebase;

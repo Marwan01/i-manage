@@ -5,10 +5,10 @@ import * as Yup from "yup";
 import { Box, Button, Container, Link, TextField, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 
-import useAuth from "../hooks/useAuth";
+import useFirebase from "../hooks/useFirebase";
 
 const Login = () => {
-  const { login } = useAuth();
+  const { login } = useFirebase();
   const formik = useFormik({
     initialValues: {
       email: "",

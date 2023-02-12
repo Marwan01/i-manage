@@ -1,14 +1,14 @@
 import Head from "next/head";
 import { Box, Container } from "@mui/material";
-import { VolunteerListResults } from "../components/volunteer/volunteer-list-results";
-import { VolunteerListToolbar } from "../components/volunteer/volunteer-list-toolbar";
+import { CustomerListResults } from "../components/customer/customer-list-results";
+import { CustomerListToolbar } from "../components/customer/customer-list-toolbar";
 import { DashboardLayout } from "../components/dashboard-layout";
 import { customers } from "../__mocks__/customers";
 
 const Page = () => (
   <>
     <Head>
-      <title>Volunteering Management | iManage</title>
+      <title>Customers | Material Kit</title>
     </Head>
     <Box
       component="main"
@@ -18,9 +18,9 @@ const Page = () => (
       }}
     >
       <Container maxWidth={false}>
-        <VolunteerListToolbar />
+        <CustomerListToolbar />
         <Box sx={{ mt: 3 }}>
-          <VolunteerListResults customers={customers} />
+          <CustomerListResults customers={customers} />
         </Box>
       </Container>
     </Box>

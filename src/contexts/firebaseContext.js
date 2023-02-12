@@ -9,7 +9,6 @@ import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
-  sendPasswordResetEmail,
 } from "firebase/auth";
 import { getFirestore, collection, doc, getDoc, setDoc } from "firebase/firestore";
 //
@@ -50,8 +49,6 @@ const AuthContext = createContext({
   login: () => Promise.resolve(),
   register: () => Promise.resolve(),
   logout: () => Promise.resolve(),
-  updateProfile: () => Promise.resolve(),
-  resetPassword: () => Promise.resolve(),
 });
 // ----------------------------------------------------------------------
 
@@ -169,42 +166,6 @@ function AuthProvider({ children }) {
 
   const logout = () => signOut(AUTH);
 
-  const updateProfile = (data) => {
-    onAuthStateChanged(AUTH, async (user) => {
-      if (user) {
-        const userRef = doc(collection(DB, "users"), user.email);
-        await setDoc(userRef, data)
-          .then(() => {
-            const d = data;
-            d.firstName = Upper(d?.firstName || "");
-            d.lastName = Upper(d?.lastName || "");
-            d.displayName = `${d?.firstName} ${d?.lastName}`;
-            setProfile(d);
-            push("/");
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      }
-    });
-  };
-
-  const resetPassword = (email) =>
-    sendPasswordResetEmail(AUTH, email)
-      .then(() => {
-        swal("Email sent", "Please check your email and spam folder.", "success", {
-          button: "OK",
-        }).then(async () => {
-          await router.push("/login/");
-        });
-      })
-      .catch((error) => {
-        swal("user not found!", "Please write first.", "error", {
-          button: "OK",
-        });
-        console.log(error);
-      });
-
   return (
     <AuthContext.Provider
       value={{
@@ -227,8 +188,6 @@ function AuthProvider({ children }) {
         login,
         register,
         logout,
-        updateProfile,
-        resetPassword,
       }}
     >
       {children}
