@@ -64,7 +64,7 @@ const Register = () => {
         <Container maxWidth="sm">
           <NextLink href="/" passHref>
             <Button component="a" startIcon={<ArrowBackIcon fontSize="small" />}>
-              Dashboard
+              Home Page
             </Button>
           </NextLink>
           <form onSubmit={formik.handleSubmit}>
@@ -140,7 +140,7 @@ const Register = () => {
               />
               <Typography color="textSecondary" variant="body2">
                 I have read the{" "}
-                <NextLink href="#" passHref>
+                <NextLink href="https://www.termsfeed.com/live/37b77f72-0b23-4e92-bd50-a47cb17aabe9" passHref>
                   <Link color="primary" underline="always" variant="subtitle2">
                     Terms and Conditions
                   </Link>

@@ -44,7 +44,7 @@ const Login = () => {
         <Container maxWidth="sm">
           <NextLink href="/" passHref>
             <Button component="a" startIcon={<ArrowBackIcon fontSize="small" />}>
-              Dashboard
+              Home Page
             </Button>
           </NextLink>
           <form onSubmit={formik.handleSubmit}>
