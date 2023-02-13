@@ -17,7 +17,13 @@ export function handEmail(values) {
     .send(
       "service_iphkhk4",
       "template_2aom70r",
-      { name: values.name, to_email: values.email, subject: values.name, message: values.name },
+      {
+        to_name: values.name,
+        to_email: values.email,
+        opp_location: values.opp_location,
+        opp_name: values.opp_name,
+        opp_date: values.opp_date,
+      },
       "i8JdAcjo8E2UlXtz1"
     )
     .then(
