@@ -1,13 +1,13 @@
 import emailjs from "@emailjs/browser";
 import swal from "sweetalert";
+import { TWILIO_API } from "../config";
 
 export function handleSms(message) {
   const url =
     "https://api.twilio.com/2010-04-01/Accounts/ACfede599b58a3a6751098156dbc0a9632/Messages.json";
 
-  const accountSid = process.env.TWILIO_ACCOUNT_SID;
-  const authToken = process.env.TWILIO_AUTH_TOKEN;
-  const auth = "Basic " + new Buffer(accountSid + ":" + authToken).toString("base64");
+  const auth =
+    "Basic " + new Buffer(TWILIO_API.accountSid + ":" + TWILIO_API.authToken).toString("base64");
 
   const details = {
     To: message.phone,
@@ -37,11 +37,13 @@ export function handleSms(message) {
     fetch(url, options)
       .then((response) => {
         resolve(response);
+      })
+      .then((responseJson) => {
+        resolve(responseJson);
         swal("Sent!", "SMS sent to volunteer.", "success", {
           button: "ok",
         });
       })
-      .then((responseJson) => resolve(responseJson))
       .catch((error) => reject(error));
   });
 }

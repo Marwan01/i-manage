@@ -8,3 +8,7 @@ export const FIREBASE_API = {
   appId: process.env.FIREBASE_APPID,
   measurementId: process.env.FIREBASE_MEASUREMENT_ID,
 };
+export const TWILIO_API = {
+  accountSid: process.env.TWILIO_ACCOUNT_SID,
+  authToken: process.env.TWILIO_AUTH_TOKEN,
+};
