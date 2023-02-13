@@ -60,7 +60,7 @@ const AuthContext = createContext({
   register: () => Promise.resolve(),
   logout: () => Promise.resolve(),
   getOpportunities: () => Promise.resolve(),
-  createOpportunities: () => Promise.resolve(),
+  createOpportunity: () => Promise.resolve(),
   updateOpportunity: () => Promise.resolve(),
   deleteOpportunity: () => Promise.resolve(),
 });
@@ -177,7 +177,7 @@ function AuthProvider({ children }) {
       });
 
   const logout = () => signOut(AUTH);
-  const getOpportunities = () => async () => {
+  const getOpportunities = async () => {
     onAuthStateChanged(AUTH, async (user) => {
       if (user) {
         const oppRef = await getDocs(collection(DB, "users", user?.email, "opportunities"));
@@ -190,18 +190,18 @@ function AuthProvider({ children }) {
       }
     });
   };
-  const createOpportunity = (newOpportunity) => async () => {
+  const createOpportunity = async (newOpportunity) => {
     onAuthStateChanged(AUTH, async (user) => {
       const docRef = await addDoc(
         collection(DB, "users", user.email, "opportunities"),
         newOpportunity
       );
       newOpportunity.id = docRef.id;
-      const arr = allOpportunities;
-      setAllOpportunities(arr.push(newOpportunity));
+
+      setAllOpportunities([newOpportunity, ...allOpportunities]);
     });
   };
-  const updateOpportunity = (opportunitytId, updateOpportunity) => async () => {
+  const updateOpportunity = async (opportunitytId, updateOpportunity) => {
     updateOpportunity.id = opportunitytId;
     onAuthStateChanged(AUTH, async (user) => {
       const userRef = doc(collection(DB, "users", user.email, "opportunities"), opportunitytId);
@@ -209,10 +209,10 @@ function AuthProvider({ children }) {
       const arr = allOpportunities;
       const opportunityIndex = arr.map(() => arr.findIndex((obj) => obj.id === opportunitytId));
       arr[opportunityIndex] = updateOpportunity;
-      setAllOpportunities(arr);
+      setAllOpportunities([...arr]);
     });
   };
-  const deleteOpportunity = (opportunitytId) => async () => {
+  const deleteOpportunity = async (opportunitytId) => {
     onAuthStateChanged(AUTH, async (user) => {
       const getVolunteer = await getDocs(
         collection(DB, "user", user.email, "opportunities", opportunitytId, "procedures")
@@ -223,7 +223,7 @@ function AuthProvider({ children }) {
       const arr = allOpportunities;
       const opportunityIndex = arr.map(() => arr.findIndex((obj) => obj.id === opportunitytId));
       delete arr[opportunityIndex];
-      setAllOpportunities(arr);
+      setAllOpportunities([...arr]);
     });
   };
   return (
