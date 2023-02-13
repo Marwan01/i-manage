@@ -43,7 +43,7 @@ const Page = () => (
               }}
             />
           </Box>
-          <NextLink href="/volunteer" passHref>
+          <NextLink href="/opportunities" passHref>
             <Button component="a" sx={{ mt: 3 }} variant="contained">
               Start Now!
             </Button>

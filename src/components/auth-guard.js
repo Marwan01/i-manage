@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import PropTypes from "prop-types";
-import useFirebase from "../hooks/useFirebase";
 
+import { initializeApp } from "firebase/app";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { FIREBASE_API } from "../config";
 export const AuthGuard = (props) => {
+  const firebaseApp = initializeApp(FIREBASE_API);
+
+  const AUTH = getAuth(firebaseApp);
   const { children } = props;
   const router = useRouter();
-  const { isAuthenticated } = useFirebase();
+
   const ignore = useRef(false);
   const [checked, setChecked] = useState(false);
 
@@ -26,18 +31,19 @@ export const AuthGuard = (props) => {
       }
 
       ignore.current = true;
-
-      if (!isAuthenticated) {
-        console.log("Not authenticated, redirecting");
-        router
-          .replace({
-            pathname: "/login",
-            query: router.asPath !== "/" ? { continueUrl: router.asPath } : undefined,
-          })
-          .catch(console.error);
-      } else {
-        setChecked(true);
-      }
+      onAuthStateChanged(AUTH, async (user) => {
+        if (!user) {
+          console.log("Not authenticated, redirecting");
+          router
+            .replace({
+              pathname: "/login",
+              query: router.asPath !== "/" ? { continueUrl: router.asPath } : undefined,
+            })
+            .catch(console.error);
+        } else {
+          setChecked(true);
+        }
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [router.isReady]

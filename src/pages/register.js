@@ -13,6 +13,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { LoadingButton } from "@mui/lab";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import useFirebase from "../hooks/useFirebase";
 
@@ -140,7 +141,10 @@ const Register = () => {
               />
               <Typography color="textSecondary" variant="body2">
                 I have read the{" "}
-                <NextLink href="https://www.termsfeed.com/live/37b77f72-0b23-4e92-bd50-a47cb17aabe9" passHref>
+                <NextLink
+                  href="https://www.termsfeed.com/live/37b77f72-0b23-4e92-bd50-a47cb17aabe9"
+                  passHref
+                >
                   <Link color="primary" underline="always" variant="subtitle2">
                     Terms and Conditions
                   </Link>
@@ -151,16 +155,16 @@ const Register = () => {
               <FormHelperText error>{formik.errors.policy}</FormHelperText>
             )}
             <Box sx={{ py: 2 }}>
-              <Button
+              <LoadingButton
                 color="primary"
-                disabled={formik.isSubmitting}
+                loading={formik.isSubmitting}
                 fullWidth
                 size="large"
                 type="submit"
                 variant="contained"
               >
                 Sign Up Now
-              </Button>
+              </LoadingButton>
             </Box>
             <Typography color="textSecondary" variant="body2">
               Have an account?{" "}

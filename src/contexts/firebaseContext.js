@@ -24,7 +24,7 @@ const AUTH = getAuth(firebaseApp);
 const DB = getFirestore(firebaseApp);
 
 const initialState = {
-  isAuthenticated: true,
+  isAuthenticated: false,
   isInitialized: false,
   user: null,
   opportunities: [],

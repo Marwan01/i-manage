@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { Box, Container } from "@mui/material";
-import { OpportunitieListResults } from "../../components/opportunitie/opportunitie-list-results";
-import { OpportunitieListToolbar } from "../../components/opportunitie/opportunitie-list-toolbar";
+import { OpportunitieListResults } from "../../components/opportunities/opportunities-list-results";
+import { OpportunitieListToolbar } from "../../components/opportunities/opportunities-list-toolbar";
 import { DashboardLayout } from "../../components/dashboard-layout";
 import { customers } from "../../__mocks__/customers";
 
