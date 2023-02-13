@@ -6,7 +6,7 @@ export function handleSms(message) {
     "https://api.twilio.com/2010-04-01/Accounts/ACfede599b58a3a6751098156dbc0a9632/Messages.json";
 
   const accountSid = "ACfede599b58a3a6751098156dbc0a9632";
-  const authToken = "3245f54ff8dcdfa89e0e9774f867d932";
+  const authToken = process.env.TWILIO_AUTH_TOKEN;
   const auth = "Basic " + new Buffer(accountSid + ":" + authToken).toString("base64");
 
   const details = {
