@@ -16,10 +16,10 @@ import {
 } from "@mui/material";
 import ForwardToInboxIcon from "@mui/icons-material/ForwardToInbox";
 import SendToMobileIcon from "@mui/icons-material/SendToMobile";
+import { Edit } from "@mui/icons-material";
 import createAvatar from "../../utils/createAvatar";
 import Avatar from "../Avatar";
-import { Edit } from "@mui/icons-material";
-
+import { handEmail /*, handleSms*/ } from "../contact-functions";
 export const VolunteerListResults = ({ volunteers, currentOpportunity, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
@@ -71,15 +71,39 @@ export const VolunteerListResults = ({ volunteers, currentOpportunity, ...rest }
                   </TableCell>
                   <TableCell>
                     {volunteer.email}
-                    <IconButton color="primary">
-                      <SendToMobileIcon />
+                    <IconButton
+                      color="primary"
+                      onClick={() => {
+                        handEmail({
+                          email: volunteer.email,
+                          name: volunteer.name,
+                          phone: volunteer.phone,
+                          opp_name: currentOpportunity.name,
+                          opp_date: currentOpportunity.date,
+                          opp_location: currentOpportunity.location,
+                        });
+                      }}
+                    >
+                      <ForwardToInboxIcon />
                     </IconButton>
                   </TableCell>
 
                   <TableCell>
                     {volunteer.phone}
-                    <IconButton color="primary">
-                      <ForwardToInboxIcon />
+                    <IconButton
+                      color="primary"
+                      // onClick={() => {
+                      //   handleSms({
+                      //     email: volunteer.email,
+                      //     name: volunteer.name,
+                      //     phone: volunteer.phone,
+                      //     opp_name: currentOpportunity.name,
+                      //     opp_email: currentOpportunity.email,
+                      //     opp_location: currentOpportunity.location,
+                      //   });
+                      // }}
+                    >
+                      <SendToMobileIcon />
                     </IconButton>
                   </TableCell>
 

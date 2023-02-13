@@ -1,27 +1,31 @@
-import emailjs from "emailjs";
-const client = require("twilio")(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+import emailjs from "@emailjs/browser";
+import swal from "sweetalert";
+// const client = require("twilio")(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
 
-export function handleSms({ values }) {
-  client.messages
-    .create({
-      to: values[0],
-      body: values[1],
-    })
-    .then((message) => console.log(message.sid))
-    .done();
-}
+// export function handleSms(values) {
+//   client.messages
+//     .create({
+//       to: values.phone,
+//       body: values.name,
+//     })
+//     .then((message) => console.log(message.sid))
+//     .done();
+// }
 
-export function handEmail({ values }) {
+export function handEmail(values) {
   emailjs
     .send(
-      process.env.EMAIL_JS_SERVICE_ID,
-      process.env.EMAIL_JS_TEMPLATE_ID,
-      { name: values[0], email: values[1], subject: values[2], message: values[3] },
-      process.env.EMAIL_JS_PUBLIC_KEY
+      "service_iphkhk4",
+      "template_2aom70r",
+      { name: values.name, to_email: values.email, subject: values.name, message: values.name },
+      "i8JdAcjo8E2UlXtz1"
     )
     .then(
       (response) => {
         console.log("SUCCESS!", response.status, response.text);
+        swal("Sent!", "Email sent to volunteer.", "success", {
+          button: "ok",
+        });
       },
       (error) => {
         console.log("FAILED...", error);
