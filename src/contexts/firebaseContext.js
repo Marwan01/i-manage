@@ -24,21 +24,21 @@ const AUTH = getAuth(firebaseApp);
 const DB = getFirestore(firebaseApp);
 
 const initialState = {
-  isAuthenticated: true,
+  isAuthenticated: false,
   isInitialized: false,
   user: null,
-  valunteersOpp: [],
+  opportunities: [],
 };
 
 const reducer = (state, action) => {
   if (action.type === "INITIALISE") {
-    const { isAuthenticated, user, valunteersOpp } = action.payload;
+    const { isAuthenticated, user, opportunities } = action.payload;
     return {
       ...state,
       isAuthenticated,
       isInitialized: true,
       user,
-      valunteersOpp,
+      opportunities,
     };
   }
 
@@ -51,8 +51,8 @@ const AuthContext = createContext({
   login: () => Promise.resolve(),
   register: () => Promise.resolve(),
   logout: () => Promise.resolve(),
-  getVolunteerOpp: () => Promise.resolve(),
-  createVolunteerOpp: () => Promise.resolve(),
+  getOpportunities: () => Promise.resolve(),
+  createOpportunities: () => Promise.resolve(),
 });
 // ----------------------------------------------------------------------
 
@@ -64,7 +64,7 @@ function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { push } = useRouter();
   const [profile, setProfile] = useState(null);
-  const [allVolunteerOpp, setAllVolunteerOpp] = useState(null);
+  const [allOpportunities, setAllOpportunities] = useState(null);
   useEffect(
     () =>
       onAuthStateChanged(AUTH, async (user) => {
@@ -78,7 +78,7 @@ function AuthProvider({ children }) {
             d.displayName = `${Upper(d?.firstName)} ${Upper(d?.lastName)}`;
             setProfile(d);
           }
-          getVolunteerOpp();
+          getOpportunities();
           dispatch({
             type: "INITIALISE",
             payload: { isAuthenticated: true, user },
@@ -99,7 +99,7 @@ function AuthProvider({ children }) {
   const login = async (email, password) => {
     signInWithEmailAndPassword(AUTH, email, password)
       .then(() => {
-        push("/volunteer");
+        push("/opportunities");
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -140,7 +140,7 @@ function AuthProvider({ children }) {
           firstName,
           lastName,
         });
-        push("/");
+        push("/opportunities");
       })
       .catch((error) => {
         // Handle Errors here.
@@ -169,27 +169,27 @@ function AuthProvider({ children }) {
       });
 
   const logout = () => signOut(AUTH);
-  const getVolunteerOpp = () => async () => {
+  const getOpportunities = () => async () => {
     onAuthStateChanged(AUTH, async (user) => {
       if (user) {
-        const volRef = await getDocs(collection(DB, "users", user?.email, "volunteers"));
-        const volunt = volRef?.docs?.map((doc) => ({
+        const oppRef = await getDocs(collection(DB, "users", user?.email, "opportunities"));
+        const opp = oppRef?.docs?.map((doc) => ({
           ...doc.data(),
           id: doc.id,
         }));
 
-        setAllVolunteerOpp(volunt);
+        setAllOpportunities(opp);
       }
     });
   };
-  const createVolunteerOpp = (newVolunteerOpp) => async () => {
+  const createOpportunities = (newOpportunitie) => async () => {
     onAuthStateChanged(AUTH, async (user) => {
       const docRef = await addDoc(
-        collection(DB, "users", user.email, "volunteers"),
-        newVolunteerOpp
+        collection(DB, "users", user.email, "opportunities"),
+        newOpportunitie
       );
       newPatient.id = docRef.id;
-      setAllVolunteerOpp(allVolunteerOpp.push(newVolunteerOpp));
+      setAllOpportunities(allOpportunities.push(newOpportunitie));
     });
   };
   return (
@@ -207,8 +207,8 @@ function AuthProvider({ children }) {
         login,
         register,
         logout,
-        createVolunteerOpp,
-        volunteers: allVolunteerOpp,
+        createOpportunities,
+        opportunities: allOpportunities,
       }}
     >
       {children}

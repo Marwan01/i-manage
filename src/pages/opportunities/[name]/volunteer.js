@@ -1,14 +1,14 @@
 import Head from "next/head";
 import { Box, Container } from "@mui/material";
-import { VolunteerListResults } from "../../components/volunteer/volunteer-list-results";
-import { VolunteerListToolbar } from "../../components/volunteer/volunteer-list-toolbar";
-import { DashboardLayout } from "../../components/dashboard-layout";
-import { customers } from "../../__mocks__/customers";
+import { VolunteerListResults } from "../../../components/volunteer/volunteer-list-results";
+import { VolunteerListToolbar } from "../../../components/volunteer/volunteer-list-toolbar";
+import { DashboardLayout } from "../../../components/dashboard-layout";
+import { customers } from "../../../__mocks__/customers";
 
 const Page = () => (
   <>
     <Head>
-      <title>Volunteering Management | iManage</title>
+      <title>volunteer | iManage</title>
     </Head>
     <Box
       component="main"

@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Box, Button, Container, Link, TextField, Typography } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-
+import { LoadingButton } from "@mui/lab";
 import useFirebase from "../hooks/useFirebase";
 
 const Login = () => {
@@ -94,16 +94,16 @@ const Login = () => {
               variant="outlined"
             />
             <Box sx={{ py: 2 }}>
-              <Button
+              <LoadingButton
                 color="primary"
-                disabled={formik.isSubmitting}
+                loading={formik.isSubmitting}
                 fullWidth
                 size="large"
                 type="submit"
                 variant="contained"
               >
                 Sign In Now
-              </Button>
+              </LoadingButton>
             </Box>
             <Typography color="textSecondary" variant="body2">
               Don&apos;t have an account?{" "}
