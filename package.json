@@ -25,6 +25,7 @@
     "@mui/x-date-pickers": "5.0.1",
     "chart.js": "3.9.1",
     "date-fns": "2.29.3",
+    "emailjs": "^4.0.1",
     "firebase": "^9.17.1",
     "formik": "2.2.9",
     "next": "12.3.0",
@@ -33,6 +34,7 @@
     "react-dom": "18.2.0",
     "react-perfect-scrollbar": "1.5.8",
     "sweetalert": "^2.1.2",
+    "twilio": "^4.7.2",
     "uuid": "9.0.0",
     "yup": "0.32.11"
   },
