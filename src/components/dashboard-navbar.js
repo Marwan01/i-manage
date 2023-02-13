@@ -2,8 +2,6 @@ import { useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { AppBar, Avatar, Box, IconButton, Toolbar, Tooltip } from "@mui/material";
 
-import SearchIcon from "@mui/icons-material/Search";
-
 import { UserCircle as UserCircleIcon } from "../icons/user-circle";
 
 import { AccountPopover } from "./account-popover";
@@ -29,9 +27,9 @@ export const DashboardNavbar = (props) => {
             px: 2,
           }}
         >
-          <Tooltip title="Search">
-            <IconButton sx={{ ml: 1 }}>
-              <SearchIcon fontSize="small" />
+          <Tooltip title="Home">
+            <IconButton sx={{ ml: 1 }} onClick={()=>window.location='/'}>
+              <img fontSize="small" alt="go to home" width="40vh" height="40vh" src="/static/logo.svg"/>
             </IconButton>
           </Tooltip>
           <Box sx={{ flexGrow: 1 }} />

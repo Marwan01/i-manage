@@ -27,9 +27,9 @@ export const VolunteerListToolbar = (props) => (
         Volunteer
       </Typography>
       <Box sx={{ m: 1 }}>
-        <Button startIcon={<DownloadIcon fontSize="small" />} sx={{ mr: 1 }}>
+        {/* <Button startIcon={<DownloadIcon fontSize="small" />} sx={{ mr: 1 }}>
           Export
-        </Button>
+        </Button> */}
         <Button color="primary" variant="contained">
           Add Volunteer
         </Button>
