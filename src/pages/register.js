@@ -22,15 +22,13 @@ const Register = () => {
   const formik = useFormik({
     initialValues: {
       email: "",
-      firstName: "",
-      lastName: "",
+      companyName: "",
       password: "",
       policy: false,
     },
     validationSchema: Yup.object({
       email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
-      firstName: Yup.string().max(255).required("First name is required"),
-      lastName: Yup.string().max(255).required("Last name is required"),
+      companyName: Yup.string().max(255).required("Non profit name is required"),
       password: Yup.string().max(255).required("Password is required"),
       policy: Yup.boolean().oneOf([true], "This field must be checked"),
     }),
@@ -39,8 +37,7 @@ const Register = () => {
         await register(
           formik.values.email,
           formik.values.password,
-          formik.values.firstName,
-          formik.values.lastName
+          formik.values.companyName,
         );
       } catch (error) {
         console.log(error);
@@ -78,27 +75,15 @@ const Register = () => {
               </Typography>
             </Box>
             <TextField
-              error={Boolean(formik.touched.firstName && formik.errors.firstName)}
+              error={Boolean(formik.touched.companyName && formik.errors.companyName)}
               fullWidth
-              helperText={formik.touched.firstName && formik.errors.firstName}
-              label="First Name"
+              helperText={formik.touched.companyName && formik.errors.companyName}
+              label="Non-Profit Name"
               margin="normal"
-              name="firstName"
+              name="companyName"
               onBlur={formik.handleBlur}
               onChange={formik.handleChange}
-              value={formik.values.firstName}
-              variant="outlined"
-            />
-            <TextField
-              error={Boolean(formik.touched.lastName && formik.errors.lastName)}
-              fullWidth
-              helperText={formik.touched.lastName && formik.errors.lastName}
-              label="Last Name"
-              margin="normal"
-              name="lastName"
-              onBlur={formik.handleBlur}
-              onChange={formik.handleChange}
-              value={formik.values.lastName}
+              value={formik.values.companyName}
               variant="outlined"
             />
             <TextField
