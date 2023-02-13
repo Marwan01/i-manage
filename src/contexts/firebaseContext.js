@@ -37,17 +37,19 @@ const initialState = {
   isInitialized: false,
   user: null,
   opportunities: [],
+  volunteers: [],
 };
 
 const reducer = (state, action) => {
   if (action.type === "INITIALISE") {
-    const { isAuthenticated, user, opportunities } = action.payload;
+    const { isAuthenticated, user, opportunities, volunteers } = action.payload;
     return {
       ...state,
       isAuthenticated,
       isInitialized: true,
       user,
       opportunities,
+      volunteers,
     };
   }
 
@@ -60,9 +62,13 @@ const AuthContext = createContext({
   register: () => Promise.resolve(),
   logout: () => Promise.resolve(),
   getOpportunities: () => Promise.resolve(),
-  createOpportunities: () => Promise.resolve(),
+  createOpportunity: () => Promise.resolve(),
   updateOpportunity: () => Promise.resolve(),
   deleteOpportunity: () => Promise.resolve(),
+  getVolunteers: () => Promise.resolve(),
+  createVolunteers: () => Promise.resolve(),
+  updateVolunteers: () => Promise.resolve(),
+  deleteVolunteers: () => Promise.resolve(),
 });
 // ----------------------------------------------------------------------
 
@@ -74,7 +80,9 @@ function AuthProvider({ children }) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { push } = useRouter();
   const [profile, setProfile] = useState(null);
-  const [allOpportunities, setAllOpportunities] = useState(null);
+  const [allOpportunities, setAllOpportunities] = useState([]);
+  const [allVolunteers, setAllVolunteers] = useState([]);
+
   useEffect(
     () =>
       onAuthStateChanged(AUTH, async (user) => {
@@ -89,6 +97,7 @@ function AuthProvider({ children }) {
             setProfile(d);
           }
           getOpportunities();
+
           dispatch({
             type: "INITIALISE",
             payload: { isAuthenticated: true, user },
@@ -177,7 +186,7 @@ function AuthProvider({ children }) {
       });
 
   const logout = () => signOut(AUTH);
-  const getOpportunities = () => async () => {
+  const getOpportunities = async () => {
     onAuthStateChanged(AUTH, async (user) => {
       if (user) {
         const oppRef = await getDocs(collection(DB, "users", user?.email, "opportunities"));
@@ -190,40 +199,110 @@ function AuthProvider({ children }) {
       }
     });
   };
-  const createOpportunity = (newOpportunity) => async () => {
+  const createOpportunity = async (newOpportunity) => {
     onAuthStateChanged(AUTH, async (user) => {
       const docRef = await addDoc(
         collection(DB, "users", user.email, "opportunities"),
         newOpportunity
       );
       newOpportunity.id = docRef.id;
-      const arr = allOpportunities;
-      setAllOpportunities(arr.push(newOpportunity));
+
+      setAllOpportunities([newOpportunity, ...allOpportunities]);
     });
   };
-  const updateOpportunity = (opportunitytId, updateOpportunity) => async () => {
-    updateOpportunity.id = opportunitytId;
+  const updateOpportunity = async (opportunityId, updateOpportunity) => {
+    updateOpportunity.id = opportunityId;
     onAuthStateChanged(AUTH, async (user) => {
-      const userRef = doc(collection(DB, "users", user.email, "opportunities"), opportunitytId);
+      const userRef = doc(collection(DB, "users", user.email, "opportunities"), opportunityId);
       await setDoc(userRef, updateOpportunity);
       const arr = allOpportunities;
-      const opportunityIndex = arr.map(() => arr.findIndex((obj) => obj.id === opportunitytId));
+      const opportunityIndex = arr.map(() => arr.findIndex((obj) => obj.id === opportunityId));
       arr[opportunityIndex] = updateOpportunity;
-      setAllOpportunities(arr);
+      setAllOpportunities([...arr]);
     });
   };
-  const deleteOpportunity = (opportunitytId) => async () => {
+  const deleteOpportunity = async (opportunityId) => {
     onAuthStateChanged(AUTH, async (user) => {
       const getVolunteer = await getDocs(
-        collection(DB, "user", user.email, "opportunities", opportunitytId, "procedures")
+        collection(DB, "user", user.email, "opportunities", opportunityId, "volunteers")
       );
 
       getVolunteer.docs.map((doc) => deleteDoc(doc.ref));
-      await deleteDoc(doc(DB, "user", user.email, "opportunities", opportunitytId));
+      await deleteDoc(doc(DB, "user", user.email, "opportunities", opportunityId));
       const arr = allOpportunities;
-      const opportunityIndex = arr.map(() => arr.findIndex((obj) => obj.id === opportunitytId));
+      const opportunityIndex = arr.map(() => arr.findIndex((obj) => obj.id === opportunityId));
       delete arr[opportunityIndex];
-      setAllOpportunities(arr);
+      setAllOpportunities([...arr]);
+    });
+  };
+  const getVolunteers = async (opportunityId) => {
+    if (opportunityId) {
+      onAuthStateChanged(AUTH, async (user) => {
+        if (user) {
+          const Ref = await getDocs(
+            collection(DB, "users", user?.email, "opportunities", opportunityId, "volunteers")
+          );
+          const vol = Ref?.docs?.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+            opportunityId,
+          }));
+
+          setAllVolunteers(vol);
+        }
+      });
+    } else {
+      setAllVolunteers([]);
+    }
+  };
+  const createVolunteer = async (newVolunteer) => {
+    onAuthStateChanged(AUTH, async (user) => {
+      const docRef = await addDoc(
+        collection(
+          DB,
+          "users",
+          user.email,
+          "opportunities",
+          newVolunteer.opportunityId,
+          "volunteers"
+        ),
+        newVolunteer
+      );
+      newVolunteer.id = docRef.id;
+
+      setAllVolunteers([newVolunteer, ...allVolunteers]);
+    });
+  };
+  const updateVolunteer = async (volunteerId, updateVolunteer) => {
+    updateVolunteer.id = volunteerId;
+    onAuthStateChanged(AUTH, async (user) => {
+      const userRef = doc(
+        collection(
+          DB,
+          "users",
+          user.email,
+          "opportunities",
+          updateVolunteer.opportunityId,
+          "volunteers"
+        ),
+        volunteerId
+      );
+      await setDoc(userRef, updateVolunteer);
+      const arr = allVolunteers;
+      const volunteerIndex = arr.map(() => arr.findIndex((obj) => obj.id === volunteerId));
+      arr[volunteerIndex] = updateVolunteer;
+      setAllOpportunities([...arr]);
+    });
+  };
+  const deleteVolunteer = async (opportunityId, volunteerId) => {
+    onAuthStateChanged(AUTH, async (user) => {
+      await deleteDoc(
+        doc(DB, "user", user.email, "opportunities", opportunityId, "volunteers", volunteerId)
+      );
+      const arr = allVolunteers;
+      const volunteerIndex = arr.map(() => arr.findIndex((obj) => obj.id === volunteerId));
+      delete arr[volunteerIndex];
+      setAllOpportunities([...arr]);
     });
   };
   return (
@@ -244,6 +323,11 @@ function AuthProvider({ children }) {
         createOpportunity,
         updateOpportunity,
         deleteOpportunity,
+        volunteers: allVolunteers,
+        getVolunteers,
+        createVolunteer,
+        updateVolunteer,
+        deleteVolunteer,
       }}
     >
       {children}
