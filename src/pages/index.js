@@ -28,8 +28,7 @@ const Page = () => (
             iManage Volunteering
           </Typography>
           <Typography align="center" color="textPrimary" variant="subtitle2">
-            iManage is a free open source platform for non-profits to keep track of volunteering
-            opportunities and manage volunteers.
+            iManage is a free open source platform for non-profits to create and manage volunteering opportunities.
           </Typography>
           <Box sx={{ textAlign: "center" }}>
             <img
@@ -45,7 +44,7 @@ const Page = () => (
           </Box>
           <NextLink href="/opportunities" passHref>
             <Button component="a" sx={{ mt: 3 }} variant="contained">
-              Start Now!
+              Get Started
             </Button>
           </NextLink>
         </Box>

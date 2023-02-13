@@ -24,14 +24,14 @@ export const OpportunitiesListToolbar = (props) => (
       }}
     >
       <Typography sx={{ m: 1 }} variant="h4">
-        Customers
+        Volunteering Opportunities
       </Typography>
       <Box sx={{ m: 1 }}>
         {/* <Button startIcon={<DownloadIcon fontSize="small" />} sx={{ mr: 1 }}>
           Export
         </Button> */}
         <Button color="primary" variant="contained">
-          Add Customers
+          Add Volunteering Opportunity
         </Button>
       </Box>
     </Box>
@@ -50,7 +50,7 @@ export const OpportunitiesListToolbar = (props) => (
                   </InputAdornment>
                 ),
               }}
-              placeholder="Search customer"
+              placeholder="Search Volunteering Opportunity"
               variant="outlined"
             />
           </Box>

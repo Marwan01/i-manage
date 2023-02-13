@@ -50,7 +50,7 @@ export const VolunteerListToolbar = (props) => (
                   </InputAdornment>
                 ),
               }}
-              placeholder="Search customer"
+              placeholder="Search Volunteering Opportunity"
               variant="outlined"
             />
           </Box>

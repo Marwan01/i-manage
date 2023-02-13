@@ -71,7 +71,7 @@ const Register = () => {
                 Create a new account
               </Typography>
               <Typography color="textSecondary" gutterBottom variant="body2">
-                Use your email to create a new account
+                Join the platform and start assigning your volunteering opportunities
               </Typography>
             </Box>
             <TextField
