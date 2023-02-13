@@ -10,7 +10,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { getFirestore, collection, doc, getDoc, setDoc, getDocs } from "firebase/firestore";
+import { getFirestore, collection, doc, getDoc, setDoc, getDocs, addDoc } from "firebase/firestore";
 //
 import { FIREBASE_API } from "../config";
 import Upper from "../utils/upper";
@@ -182,14 +182,14 @@ function AuthProvider({ children }) {
       }
     });
   };
-  const createOpportunities = (newOpportunitie) => async () => {
+  const createOpportunities = (newOpportunity) => async () => {
     onAuthStateChanged(AUTH, async (user) => {
       const docRef = await addDoc(
         collection(DB, "users", user.email, "opportunities"),
-        newOpportunitie
+        newOpportunity
       );
-      newPatient.id = docRef.id;
-      setAllOpportunities(allOpportunities.push(newOpportunitie));
+      newOpportunity.id = docRef.id;
+      setAllOpportunities(allOpportunities.push(newOpportunity));
     });
   };
   return (
