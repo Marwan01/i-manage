@@ -1,11 +1,11 @@
 import { useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
-import { format } from "date-fns";
+
 import {
   Box,
   Card,
-  Checkbox,
+  IconButton,
   Table,
   TableBody,
   TableCell,
@@ -14,45 +14,15 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
+import ForwardToInboxIcon from "@mui/icons-material/ForwardToInbox";
+import SendToMobileIcon from "@mui/icons-material/SendToMobile";
 import createAvatar from "../../utils/createAvatar";
 import Avatar from "../Avatar";
+import { Edit } from "@mui/icons-material";
 
-export const VolunteerListResults = ({ customers, ...rest }) => {
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+export const VolunteerListResults = ({ volunteers, currentOpportunity, ...rest }) => {
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
-
-  const handleSelectAll = (event) => {
-    let newSelectedCustomerIds;
-
-    if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
-    } else {
-      newSelectedCustomerIds = [];
-    }
-
-    setSelectedCustomerIds(newSelectedCustomerIds);
-  };
-
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds = [];
-
-    if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds, id);
-    } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(1));
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(selectedCustomerIds.slice(0, -1));
-    } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedCustomerIds(newSelectedCustomerIds);
-  };
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -69,38 +39,17 @@ export const VolunteerListResults = ({ customers, ...rest }) => {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0 &&
-                      selectedCustomerIds.length < customers.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
                 <TableCell>Name</TableCell>
                 <TableCell>Email</TableCell>
-                <TableCell>Location</TableCell>
+
                 <TableCell>Phone</TableCell>
-                <TableCell>Registration date</TableCell>
+
+                <TableCell>Edit</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
-                <TableRow
-                  hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
-                      value="true"
-                    />
-                  </TableCell>
+              {volunteers.slice(0, limit).map((volunteer) => (
+                <TableRow hover key={volunteer.id}>
                   <TableCell>
                     <Box
                       sx={{
@@ -109,23 +58,36 @@ export const VolunteerListResults = ({ customers, ...rest }) => {
                       }}
                     >
                       <Avatar
-                        alt={customer.name}
+                        alt={volunteer.name}
                         sx={{ mr: 2 }}
-                        color={createAvatar(customer.name).color}
+                        color={createAvatar(volunteer.name).color}
                       >
-                        {createAvatar(customer.name).name}
+                        {createAvatar(volunteer.name).name}
                       </Avatar>
                       <Typography color="textPrimary" variant="body1">
-                        {customer.name}
+                        {volunteer.name}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>{customer.email}</TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                    {volunteer.email}
+                    <IconButton color="primary">
+                      <SendToMobileIcon />
+                    </IconButton>
                   </TableCell>
-                  <TableCell>{customer.phone}</TableCell>
-                  <TableCell>{format(customer.createdAt, "dd/MM/yyyy")}</TableCell>
+
+                  <TableCell>
+                    {volunteer.phone}
+                    <IconButton color="primary">
+                      <ForwardToInboxIcon />
+                    </IconButton>
+                  </TableCell>
+
+                  <TableCell>
+                    <IconButton color="success">
+                      <Edit />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -134,7 +96,7 @@ export const VolunteerListResults = ({ customers, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customers.length}
+        count={volunteers.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
@@ -146,5 +108,6 @@ export const VolunteerListResults = ({ customers, ...rest }) => {
 };
 
 VolunteerListResults.propTypes = {
-  customers: PropTypes.array.isRequired,
+  volunteers: PropTypes.array,
+  currentOpportunity: PropTypes.object,
 };

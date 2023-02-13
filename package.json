@@ -28,6 +28,7 @@
     "firebase": "^9.17.1",
     "formik": "2.2.9",
     "next": "12.3.0",
+    "param-case": "^3.0.4",
     "prop-types": "15.8.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
