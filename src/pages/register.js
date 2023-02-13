@@ -148,7 +148,7 @@ const Register = () => {
                 type="submit"
                 variant="contained"
               >
-                Sign Up Now
+                Sign Up
               </LoadingButton>
             </Box>
             <Typography color="textSecondary" variant="body2">

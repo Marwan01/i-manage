@@ -53,7 +53,7 @@ const Login = () => {
                 Sign in
               </Typography>
               <Typography color="textSecondary" gutterBottom variant="body2">
-                Sign in to the platform to start assigning your volunteering opportunities
+                Sign in to the platform to`` start assigning your volunteering opportunities
               </Typography>
             </Box>
 
@@ -102,7 +102,7 @@ const Login = () => {
                 type="submit"
                 variant="contained"
               >
-                Sign In Now
+                Sign In
               </LoadingButton>
             </Box>
             <Typography color="textSecondary" variant="body2">
