@@ -9,9 +9,6 @@ import {
   Typography,
 } from "@mui/material";
 import { Search as SearchIcon } from "../../icons/search";
-
-import { Download as DownloadIcon } from "../../icons/download";
-
 export const OpportunitiesListToolbar = (props) => (
   <Box {...props}>
     <Box

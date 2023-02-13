@@ -10,7 +10,16 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { getFirestore, collection, doc, getDoc, setDoc, getDocs, addDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  collection,
+  doc,
+  getDoc,
+  setDoc,
+  getDocs,
+  addDoc,
+  deleteDoc,
+} from "firebase/firestore";
 //
 import { FIREBASE_API } from "../config";
 import Upper from "../utils/upper";
@@ -47,12 +56,13 @@ const reducer = (state, action) => {
 
 const AuthContext = createContext({
   ...initialState,
-  method: "firebase",
   login: () => Promise.resolve(),
   register: () => Promise.resolve(),
   logout: () => Promise.resolve(),
   getOpportunities: () => Promise.resolve(),
   createOpportunities: () => Promise.resolve(),
+  updateOpportunity: () => Promise.resolve(),
+  deleteOpportunity: () => Promise.resolve(),
 });
 // ----------------------------------------------------------------------
 
@@ -180,14 +190,40 @@ function AuthProvider({ children }) {
       }
     });
   };
-  const createOpportunities = (newOpportunity) => async () => {
+  const createOpportunity = (newOpportunity) => async () => {
     onAuthStateChanged(AUTH, async (user) => {
       const docRef = await addDoc(
         collection(DB, "users", user.email, "opportunities"),
         newOpportunity
       );
       newOpportunity.id = docRef.id;
-      setAllOpportunities(allOpportunities.push(newOpportunity));
+      const arr = allOpportunities;
+      setAllOpportunities(arr.push(newOpportunity));
+    });
+  };
+  const updateOpportunity = (opportunitytId, updateOpportunity) => async () => {
+    updateOpportunity.id = opportunitytId;
+    onAuthStateChanged(AUTH, async (user) => {
+      const userRef = doc(collection(DB, "users", user.email, "opportunities"), opportunitytId);
+      await setDoc(userRef, updateOpportunity);
+      const arr = allOpportunities;
+      const opportunityIndex = arr.map(() => arr.findIndex((obj) => obj.id === opportunitytId));
+      arr[opportunityIndex] = updateOpportunity;
+      setAllOpportunities(arr);
+    });
+  };
+  const deleteOpportunity = (opportunitytId) => async () => {
+    onAuthStateChanged(AUTH, async (user) => {
+      const getVolunteer = await getDocs(
+        collection(DB, "user", user.email, "opportunities", opportunitytId, "procedures")
+      );
+
+      getVolunteer.docs.map((doc) => deleteDoc(doc.ref));
+      await deleteDoc(doc(DB, "user", user.email, "opportunities", opportunitytId));
+      const arr = allOpportunities;
+      const opportunityIndex = arr.map(() => arr.findIndex((obj) => obj.id === opportunitytId));
+      delete arr[opportunityIndex];
+      setAllOpportunities(arr);
     });
   };
   return (
@@ -204,8 +240,10 @@ function AuthProvider({ children }) {
         login,
         register,
         logout,
-        createOpportunities,
         opportunities: allOpportunities,
+        createOpportunity,
+        updateOpportunity,
+        deleteOpportunity,
       }}
     >
       {children}
