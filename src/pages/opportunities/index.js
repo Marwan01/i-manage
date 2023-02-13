@@ -1,7 +1,7 @@
 import Head from "next/head";
 import { Box, Container } from "@mui/material";
-import { OpportunitieListResults } from "../../components/opportunities/opportunities-list-results";
-import { OpportunitieListToolbar } from "../../components/opportunities/opportunities-list-toolbar";
+import { OpportunitiesListResults } from "../../components/opportunities/opportunities-list-results";
+import { OpportunitiesListToolbar } from "../../components/opportunities/opportunities-list-toolbar";
 import { DashboardLayout } from "../../components/dashboard-layout";
 import { customers } from "../../__mocks__/customers";
 
@@ -18,9 +18,9 @@ const Page = () => (
       }}
     >
       <Container maxWidth={false}>
-        <OpportunitieListToolbar />
+        <OpportunitiesListToolbar />
         <Box sx={{ mt: 3 }}>
-          <OpportunitieListResults customers={customers} />
+          <OpportunitiesListResults customers={customers} />
         </Box>
       </Container>
     </Box>
