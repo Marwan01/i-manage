@@ -75,7 +75,7 @@ function AuthProvider({ children }) {
 
           if (docSnap.exists()) {
             const d = docSnap.data();
-            d.displayName = `${Upper(d?.firstName)} ${Upper(d?.lastName)}`;
+            d.displayName = `${Upper(d?.companyName)}`;
             setProfile(d);
           }
           getOpportunities();
@@ -127,18 +127,16 @@ function AuthProvider({ children }) {
       });
   };
 
-  const register = (email, password, firstName, lastName) =>
+  const register = (email, password, companyName) =>
     createUserWithEmailAndPassword(AUTH, email, password)
       .then(async () => {
         email = email.toLowerCase();
-        firstName = Upper(firstName);
-        lastName = Upper(lastName);
+        companyName = Upper(companyName);
         const userRef = doc(collection(DB, "users"), email);
 
         await setDoc(userRef, {
           email,
-          firstName,
-          lastName,
+          companyName,
         });
         push("/opportunities");
       })
@@ -200,8 +198,7 @@ function AuthProvider({ children }) {
         user: {
           id: state?.user?.uid,
           email: state?.user?.email,
-          firstName: state?.user?.firstName || profile?.firstName,
-          lastName: state?.user?.lastName || profile?.lastName,
+          companyName: state?.user?.companyName || profile?.companyName,
           displayName: state?.user?.displayName || profile?.displayName,
         },
         login,
