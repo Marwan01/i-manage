@@ -64,7 +64,7 @@ export const OpportunitiesListResults = ({ opportunities, ...rest }) => {
               </TableHead>
               <TableBody>
                 {opportunities?.slice(0, limit).map((opportunity) => (
-                  <TableRow hover key={opportunity.id}>
+                  <TableRow hover key={opportunity?.id}>
                     <TableCell>
                       <Box
                         sx={{
@@ -73,25 +73,25 @@ export const OpportunitiesListResults = ({ opportunities, ...rest }) => {
                         }}
                       >
                         <Avatar
-                          alt={opportunity.name}
+                          alt={opportunity?.name}
                           sx={{ mr: 2 }}
-                          color={createAvatar(opportunity.name).color}
+                          color={createAvatar(opportunity?.name).color}
                         >
-                          {createAvatar(opportunity.name).name}
+                          {createAvatar(opportunity?.name)?.name}
                         </Avatar>
                         <Typography color="textPrimary" variant="body1">
-                          {opportunity.name}
+                          {opportunity?.name}
                         </Typography>
                       </Box>
                     </TableCell>
-                    <TableCell>{opportunity.location}</TableCell>
+                    <TableCell>{opportunity?.location}</TableCell>
 
-                    <TableCell>{opportunity.date}</TableCell>
+                    <TableCell>{opportunity?.date}</TableCell>
                     <TableCell>
                       <IconButton
                         color="info"
                         onClick={() => {
-                          push(`opportunities/${paramCase(opportunity.name)}/volunteers`);
+                          push(`opportunities/${paramCase(opportunity?.name)}/volunteers`);
                         }}
                       >
                         <GroupsIcon />

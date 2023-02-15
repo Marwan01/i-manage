@@ -216,7 +216,7 @@ function AuthProvider({ children }) {
       const userRef = doc(collection(DB, "users", user.email, "opportunities"), opportunityId);
       await setDoc(userRef, updateOpportunity);
       const arr = allOpportunities;
-      const opportunityIndex = arr.map(() => arr.findIndex((obj) => obj.id === opportunityId));
+      const opportunityIndex = arr.findIndex((obj) => obj.id === opportunityId);
       arr[opportunityIndex] = updateOpportunity;
       setAllOpportunities([...arr]);
     });
@@ -224,14 +224,14 @@ function AuthProvider({ children }) {
   const deleteOpportunity = async (opportunityId) => {
     onAuthStateChanged(AUTH, async (user) => {
       const getVolunteer = await getDocs(
-        collection(DB, "user", user.email, "opportunities", opportunityId, "volunteers")
+        collection(DB, "users", user.email, "opportunities", opportunityId, "volunteers")
       );
 
       getVolunteer.docs.map((doc) => deleteDoc(doc.ref));
-      await deleteDoc(doc(DB, "user", user.email, "opportunities", opportunityId));
+      await deleteDoc(doc(DB, "users", user.email, "opportunities", opportunityId));
       const arr = allOpportunities;
-      const opportunityIndex = arr.map(() => arr.findIndex((obj) => obj.id === opportunityId));
-      delete arr[opportunityIndex];
+      const opportunityIndex = arr.findIndex((obj) => obj.id === opportunityId);
+      arr.splice(opportunityIndex, 1);
       setAllOpportunities([...arr]);
     });
   };
