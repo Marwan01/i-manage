@@ -13,8 +13,9 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
+  IconButton,
 } from "@mui/material";
-
+import ArrowCircleLeftIcon from "@mui/icons-material/ArrowCircleLeft";
 import { Search as SearchIcon } from "../../icons/search";
 import Upper from "../../utils/upper";
 import VolunteerNewEdit from "./volunteer-new-edit";
@@ -41,6 +42,15 @@ export const VolunteerListToolbar = ({ currentOpportunity, ...other }) => {
           m: -1,
         }}
       >
+        <IconButton
+          color="primary"
+          size="large"
+          onClick={() => {
+            window.location = "/opportunities";
+          }}
+        >
+          <ArrowCircleLeftIcon />
+        </IconButton>
         <Typography sx={{ m: 1 }} variant="h4">
           Volunteer of {Upper(currentOpportunity?.name)}
         </Typography>

@@ -289,20 +289,20 @@ function AuthProvider({ children }) {
       );
       await setDoc(userRef, updateVolunteer);
       const arr = allVolunteers;
-      const volunteerIndex = arr.map(() => arr.findIndex((obj) => obj.id === volunteerId));
+      const volunteerIndex = arr.findIndex((obj) => obj.id === volunteerId);
       arr[volunteerIndex] = updateVolunteer;
-      setAllOpportunities([...arr]);
+      setAllVolunteers([...arr]);
     });
   };
   const deleteVolunteer = async (opportunityId, volunteerId) => {
     onAuthStateChanged(AUTH, async (user) => {
       await deleteDoc(
-        doc(DB, "user", user.email, "opportunities", opportunityId, "volunteers", volunteerId)
+        doc(DB, "users", user.email, "opportunities", opportunityId, "volunteers", volunteerId)
       );
       const arr = allVolunteers;
-      const volunteerIndex = arr.map(() => arr.findIndex((obj) => obj.id === volunteerId));
-      delete arr[volunteerIndex];
-      setAllOpportunities([...arr]);
+      const volunteerIndex = arr.findIndex((obj) => obj.id === volunteerId);
+      arr.splice(volunteerIndex, 1);
+      setAllVolunteers([...arr]);
     });
   };
   return (
