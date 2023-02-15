@@ -28,8 +28,14 @@ export const DashboardNavbar = (props) => {
           }}
         >
           <Tooltip title="Home">
-            <IconButton sx={{ ml: 1 }} onClick={()=>window.location='/'}>
-              <img fontSize="small" alt="go to home" width="40vh" height="40vh" src="/static/logo.svg"/>
+            <IconButton sx={{ ml: 1 }} onClick={() => (window.location = "/")}>
+              <img
+                fontSize="small"
+                alt="go to home"
+                width="40vh"
+                height="40vh"
+                src="/static/logo.svg"
+              />
             </IconButton>
           </Tooltip>
           <Box sx={{ flexGrow: 1 }} />
@@ -43,7 +49,6 @@ export const DashboardNavbar = (props) => {
               width: 40,
               ml: 1,
             }}
-            src="/static/images/avatars/avatar_1.png"
           >
             <UserCircleIcon fontSize="small" />
           </Avatar>

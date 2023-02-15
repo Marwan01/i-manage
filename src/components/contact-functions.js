@@ -1,18 +1,15 @@
 import emailjs from "@emailjs/browser";
 import swal from "sweetalert";
-import { TWILIO_API } from "../config";
+import { TWILIO_API, EMAILJS_API } from "../config";
 
 export function handleSms(message) {
-  const url =
-    "https://api.twilio.com/2010-04-01/Accounts/ACfede599b58a3a6751098156dbc0a9632/Messages.json";
-
   const auth =
     "Basic " + new Buffer(TWILIO_API.accountSid + ":" + TWILIO_API.authToken).toString("base64");
 
   const details = {
     To: message.phone,
     From: "+18337991342",
-    MessagingServiceSid: "MG89f9e9aa8f1ddff7b8b2eed8cef7e41f",
+    MessagingServiceSid: TWILIO_API.MessagingServiceSid,
     Body: `Dear ${message.name}. You have been signed up for ${message.opp_name} in ${message.opp_location}, at ${message.opp_date}.`,
   };
 
@@ -34,7 +31,7 @@ export function handleSms(message) {
   };
 
   return new Promise((resolve, reject) => {
-    fetch(url, options)
+    fetch(TWILIO_API.url, options)
       .then((response) => {
         resolve(response);
       })
@@ -50,8 +47,8 @@ export function handleSms(message) {
 export function handEmail(values) {
   emailjs
     .send(
-      "service_iphkhk4",
-      "template_2aom70r",
+      EMAILJS_API.serviceId,
+      EMAILJS_API.templateId,
       {
         to_name: values.name,
         to_email: values.email,
@@ -59,7 +56,7 @@ export function handEmail(values) {
         opp_name: values.opp_name,
         opp_date: values.opp_date,
       },
-      "i8JdAcjo8E2UlXtz1"
+      EMAILJS_API.publicKey
     )
     .then(
       (response) => {

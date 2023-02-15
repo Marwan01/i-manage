@@ -11,4 +11,11 @@ export const FIREBASE_API = {
 export const TWILIO_API = {
   accountSid: process.env.TWILIO_ACCOUNT_SID,
   authToken: process.env.TWILIO_AUTH_TOKEN,
+  MessagingServiceSid: process.env.TWILIO_MESSAGING_ACCOUNT_SID,
+  url: process.env.TWILIO_MESSAGING_URL,
+};
+export const EMAILJS_API = {
+  serviceId: process.env.EMAIL_JS_SERVICE_ID,
+  templateId: process.env.EMAIL_JS_TEMPLATE_ID,
+  publicKey: process.env.EMAIL_JS_PUBLIC_KEY,
 };
